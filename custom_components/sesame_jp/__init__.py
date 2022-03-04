@@ -1,0 +1,1 @@
+"""The Sesame-JP component."""

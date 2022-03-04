@@ -1,0 +1,11 @@
+{
+  "domain": "sesame_jp",
+  "name": "Sesame Smart Lock JP",
+  "documentation": "https://www.home-assistant.io/integrations/sesame_jp",
+  "issue_tracker": "",
+  "dependencies": [],
+  "after_dependencies": [],
+  "codeowners": ["@thematrixdev"],
+  "requirements": [],
+  "iot_class": "cloud_polling"
+}
