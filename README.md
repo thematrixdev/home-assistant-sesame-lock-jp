@@ -4,17 +4,6 @@ If you have purchased your Sesame-Lock outside Japan, please use this:
 
 https://www.home-assistant.io/integrations/sesame/
 
-## Development environment
-- Ubuntu 21.10
-- Android 12 phone
-
-## Tested environment
-- Raspberry Pi 4B
-- Raspbian Buster
-- Home Assistant Container 2022.2.9 (i.e. Docker version)
-- Sesame Lock 4
-- Sesame WIFI-Module (For Sesame Lock 3 and 4)
-
 ## Prerequisite
 - Sesame Lock (for sure)
 - Sesame WIFI module
@@ -96,6 +85,17 @@ lock:
 ## Usage
 - `Lock: Lock`
 - `Lock: Unlock`
+
+## Development environment
+- Ubuntu 21.10
+- Android 12 phone
+
+## Testing environment
+- Raspberry Pi 4B
+- Raspbian Buster
+- Home Assistant Container 2022.3.1 (i.e. Docker version)
+- Sesame Lock 4
+- Sesame WIFI-Module (For Sesame Lock 3 and 4)
 
 ## Resource
 - Sesame Lock 4 https://jp.candyhouse.co/products/sesame4
