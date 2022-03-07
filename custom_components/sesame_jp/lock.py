@@ -1,22 +1,19 @@
 """Support for Sesame-JP"""
 from __future__ import annotations
 
-import aiohttp
-import async_timeout
 import asyncio
 import base64
 import datetime
 import logging
-import pysesame2
+
+import aiohttp
+import async_timeout
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from Crypto.Cipher import AES
 from Crypto.Hash import CMAC
-
-import homeassistant.helpers.config_validation as cv
 from homeassistant.components.lock import PLATFORM_SCHEMA, LockEntity
 from homeassistant.const import (
-    ATTR_BATTERY_LEVEL,
-    ATTR_DEVICE_ID,
     CONF_API_KEY,
     CONF_CLIENT_SECRET,
     CONF_DEVICE_ID,
@@ -129,6 +126,17 @@ class SesameJPDevice(LockEntity):
         await self._sesame_command(action="UNLOCK")
 
     async def async_update(self) -> None:
+        if self._battery == -1:
+            await self._sesame_update()
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        return {
+            "uuid": self._uuid,
+            "battery_level": self._battery,
+        }
+
+    async def _sesame_update(self) -> None:
         try:
             async with async_timeout.timeout(TIMEOUT):
                 response = await self._session.request(
@@ -142,22 +150,21 @@ class SesameJPDevice(LockEntity):
                 if state:
                     self._responsive = True
 
-                    if state['CHSesame2Status'] == "locked":
-                        self._is_locked = True
-                    else:
-                        self._is_locked = False
-                    self._battery = state['batteryPercentage']
+                    if 'CHSesame2Status' in state:
+                        if state['CHSesame2Status'] == "locked":
+                            self._is_locked = True
+                        elif state['CHSesame2Status'] == "unlocked":
+                            self._is_locked = False
+
+                    if 'batteryPercentage' in state:
+                        self._battery = state['batteryPercentage']
+
+                    if 'message' in state:
+                        _LOGGER.error(state['message'])
                 else:
                     self._responsive = False
         except asyncio.TimeoutError:
             _LOGGER.error("Failed to connect to Sesame server")
-
-    @property
-    def extra_state_attributes(self) -> dict:
-        return {
-            "uuid": self._uuid,
-            "battery_level": self._battery,
-        }
 
     async def _sesame_command(self, action) -> None:
         if action == "LOCK":
