@@ -21,6 +21,26 @@ https://play.google.com/store/apps/details?id=co.candyhouse.sesame2
 - https://partners.candyhouse.co/login
 
 ## Accquire Sesame Secret (private-key)
+Please follow either one of the below method
+- A. QR-Code-method
+- B. Dev-App-method
+
+### A. QR-Code-method
+- Open Sesame-App on your phone
+- Select the Lock, and choose properties
+- "Share" the lock and get the QR-code
+
+#### A1. Use any QR-Code Reader
+- Scan and get the value of `sk`
+- `base64` decode `sk`
+- from 1st to 16th byte is the private-key
+
+#### A2. Use an online Sesame-QR-Code Reader
+- The QR-code-reader is not made by me. I bear no responsibility!
+- https://sesame-qr-reader.vercel.app/
+- Upload the QR-code image and get the data
+
+### B. Dev-App-method
 - Uninstall the Sesame-App from your phone
 - Get Sesame Android app SDK (v2.0.7 at the time of writing this readme)
 ```
@@ -102,6 +122,8 @@ lock:
 - Sesame WIFI Module https://jp.candyhouse.co/products/new-wifi
 - Sesame Web API https://doc.candyhouse.co/ja/SesameAPI
 - Sesame Android SDK https://github.com/CANDY-HOUSE/SesameSDK_Android_with_DemoApp
+- Obtain private-key from QR-Code https://qiita.com/kaonaga9/items/fb44d8e0b0aa93aab484
+- Obtain private-key from QR-Code https://zenn.dev/key3/articles/6c1c2841d7a8a2
 
 ## Thanks
 - Home Assistant community on Discord https://www.home-assistant.io/help/
