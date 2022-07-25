@@ -29,6 +29,7 @@ Please follow either one of the below method
 - Open Sesame-App on your phone
 - Select the Lock, and choose properties
 - "Share" the lock and get the QR-code
+- Use "manager" or "owner" key
 
 #### A1. Use any QR-Code Reader
 - Scan and get the value of `sk`
