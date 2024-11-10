@@ -26,12 +26,14 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 ATTR_SERIAL_NO = "serial"
+CONF_INTERVAL = "interval"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_NAME): cv.string,
     vol.Required(CONF_DEVICE_ID): cv.string,
     vol.Required(CONF_API_KEY): cv.string,
     vol.Required(CONF_CLIENT_SECRET): cv.string,
+    vol.Optional(CONF_INTERVAL, default=1200): cv.positive_int,  # Default to 1200 seconds
 })
 
 _LOGGER = logging.getLogger(__name__)
@@ -49,6 +51,7 @@ async def async_setup_platform(
     device_id = config.get(CONF_DEVICE_ID)
     api_key = config.get(CONF_API_KEY)
     client_secret = config.get(CONF_CLIENT_SECRET)
+    interval = config.get(CONF_INTERVAL)
 
     session = aiohttp_client.async_get_clientsession(hass)
 
@@ -59,6 +62,7 @@ async def async_setup_platform(
             api_key=api_key,
             secret_key=client_secret,
             session=session,
+            interval=interval,
         )],
         update_before_add=True,
     )
@@ -72,11 +76,13 @@ class SesameJPDevice(LockEntity):
             api_key: str,
             secret_key: str,
             session: aiohttp.ClientSession,
+            interval: int,
     ) -> None:
         self._name: str = name
         self._uuid: str = uuid
         self._api_key: str = api_key
         self._secret_key: str = secret_key
+        self._interval: int = interval
 
         self._session = session
         self._api_url = f"https://app.candyhouse.co/api/sesame2/{uuid}"
@@ -129,8 +135,8 @@ class SesameJPDevice(LockEntity):
 
     async def async_update(self) -> None:
         current_time = time.time()
-        # Only update if 20 minutes have passed since the last API call
-        if current_time - self._last_update >= 1200:  # 1200 seconds = 20 minutes
+        # Only update if the specified interval has passed since the last API call
+        if current_time - self._last_update >= self._interval:
             await self._sesame_update()
             self._last_update = current_time
 
