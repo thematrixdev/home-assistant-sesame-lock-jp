@@ -9,6 +9,7 @@ import logging
 import aiohttp
 import async_timeout
 import homeassistant.helpers.config_validation as cv
+import time
 import voluptuous as vol
 from Crypto.Cipher import AES
 from Crypto.Hash import CMAC
@@ -86,6 +87,7 @@ class SesameJPDevice(LockEntity):
 
         self._responsive = False
         self._battery = -1
+        self._last_update = 0  # Track last update timestamp
 
     @property
     def name(self) -> str | None:
@@ -126,8 +128,11 @@ class SesameJPDevice(LockEntity):
         await self._sesame_command(action="UNLOCK")
 
     async def async_update(self) -> None:
-        if self._battery == -1:
+        current_time = time.time()
+        # Only update if 20 minutes have passed since the last API call
+        if current_time - self._last_update >= 1200:  # 1200 seconds = 20 minutes
             await self._sesame_update()
+            self._last_update = current_time
 
     @property
     def extra_state_attributes(self) -> dict:
